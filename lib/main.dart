@@ -41,7 +41,12 @@ class _StoffPageState extends State<StoffPage> {
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('StoffEvents').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return LinearProgressIndicator();
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Color.fromRGBO(0xFF, 0x33, 0x33, 0xFF)),
+          );
+        }
 
         return _buildList(context, snapshot.data.documents);
       },
@@ -69,7 +74,13 @@ class _StoffPageState extends State<StoffPage> {
         child: ListTile(
           title: Text(record.eventName),
           trailing: Text(record.startTime.toString()),
-          onTap: () => print(record),
+          onTap: () => Firestore.instance.runTransaction((transaction) async {
+            final freshSnapshot = await transaction.get(record.reference);
+            final fresh = Record.fromSnapshot(freshSnapshot);
+
+            await transaction
+                .update(record.reference, {'startTime': fresh.startTime.add(Duration(days: 1, minutes: 12))});
+          }),
         ),
       ),
     );
