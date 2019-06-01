@@ -104,7 +104,7 @@ class Record {
       : assert(map['event'] != null),
         assert(map['startTime'] != null),
         eventName = map['event'],
-        startTime = map['startTime'];
+        startTime = map['startTime'] is Timestamp ? map['startTime'].toDate() : map['startTime'];
 
   Record.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
