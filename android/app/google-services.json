@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "674276534623",
+    "firebase_url": "https://stoffapp.firebaseio.com",
+    "project_id": "stoffapp",
+    "storage_bucket": "stoffapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674276534623:android:55424842d03fc1ce",
+        "android_client_info": {
+          "package_name": "de.hack19.stoff"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "674276534623-6aq0u9v70t0q7m1aaap0sht4hm43eioi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAvLVU8F_4MVMAXP9RPFgEsKtBwVWm4q8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "674276534623-6aq0u9v70t0q7m1aaap0sht4hm43eioi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
