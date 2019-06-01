@@ -34,6 +34,17 @@ class _StoffPageState extends State<StoffPage> {
         title: Text(widget.title),
       ),
       body: _buildBody(context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+          CollectionReference stoffEvents = Firestore.instance.collection("StoffEvents");
+
+          stoffEvents.add({'startTime': DateTime.now(),
+                           'event' : "Loewenzahn"});
+        },
+        child: Icon(Icons.add_box),
+        backgroundColor: Colors.pink,
+      ),
     );
   }
 
