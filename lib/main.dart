@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stoff/addEvent.dart';
 
 void main() => runApp(Stoff());
 
@@ -36,11 +37,7 @@ class _StoffPageState extends State<StoffPage> {
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add your onPressed code here!
-          CollectionReference stoffEvents = Firestore.instance.collection("StoffEvents");
-
-          stoffEvents.add({'startTime': DateTime.now(),
-                           'event' : "Loewenzahn"});
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddEventPage()));
         },
         child: Icon(Icons.add_box),
         backgroundColor: Colors.pink,
