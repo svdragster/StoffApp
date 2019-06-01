@@ -3,14 +3,6 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(Stoff());
 
-final dummySnapshot = [
-  {"event": "Kaffee", "startTime": new DateTime.utc(2019, 6, 2)},
-  {"event": "Tee", "startTime": new DateTime.utc(2019, 6, 3)},
-  {"event": "Koks", "startTime": new DateTime.utc(2019, 6, 4)},
-  {"event": "THC", "startTime": new DateTime.utc(2019, 6, 5)},
-  {"event": "Morphium", "startTime": new DateTime.utc(2019, 6, 6)},
-];
-
 class Stoff extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -46,19 +38,25 @@ class _StoffPageState extends State<StoffPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    // TODO: get actual snapshot from Cloud Firestore
-    return _buildList(context, dummySnapshot);
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('StoffEvents').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return LinearProgressIndicator();
+
+        return _buildList(context, snapshot.data.documents);
+      },
+    );
   }
 
-  Widget _buildList(BuildContext context, List<Map> snapshot) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, Map data) {
-    final record = Record.fromMap(data);
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final record = Record.fromSnapshot(data);
 
     return Padding(
       key: ValueKey(record.eventName),
