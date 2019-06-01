@@ -1,6 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(Stoff());
+
+final dummySnapshot = [
+  {"event": "Kaffee", "timeToStart": 15},
+  {"event": "Tee", "timeToStart": 14},
+  {"event": "Koks", "timeToStart": 11},
+  {"event": "THC", "timeToStart": 10},
+  {"event": "Morphium", "timeToStart": 1},
+];
 
 class Stoff extends StatelessWidget {
   // This widget is the root of your application.
