@@ -1,4 +1,4 @@
-package com.example.app;
+package de.hack19.stoff;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
