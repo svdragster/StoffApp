@@ -3,7 +3,6 @@
 *.log
 *.pyc
 *.swp
-pubspec.lock
 .DS_Store
 .atom/
 .buildlog/
@@ -20,6 +19,7 @@ pubspec.lock
 .vscode/
 
 # Flutter/Dart/Pub related
+./pubspec.lock
 **/doc/api/
 .dart_tool/
 .flutter-plugins
