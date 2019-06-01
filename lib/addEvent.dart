@@ -50,6 +50,8 @@ class _AddEventPageState extends State<AddEventPage> {
 
               stoffEvents.add(
                   {'startTime': eventTime, 'event': eventNameController.text});
+
+              Navigator.of(context).pop();
             },
             child: const Text('Add Event', style: TextStyle(fontSize: 20)),
           ),
