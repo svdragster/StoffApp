@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 void main() => runApp(Stoff());
 
 final dummySnapshot = [
-  {"event": "Kaffee", "timeToStart": 15},
-  {"event": "Tee", "timeToStart": 14},
-  {"event": "Koks", "timeToStart": 11},
-  {"event": "THC", "timeToStart": 10},
-  {"event": "Morphium", "timeToStart": 1},
+  {"event": "Kaffee", "startTime": new DateTime.utc(2019, 6, 2)},
+  {"event": "Tee", "startTime": new DateTime.utc(2019, 6, 3)},
+  {"event": "Koks", "startTime": new DateTime.utc(2019, 6, 4)},
+  {"event": "THC", "startTime": new DateTime.utc(2019, 6, 5)},
+  {"event": "Morphium", "startTime": new DateTime.utc(2019, 6, 6)},
 ];
 
 class Stoff extends StatelessWidget {
@@ -45,19 +45,53 @@ class _StoffPageState extends State<StoffPage> {
     );
   }
 
-  Center _buildBody(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            'We will meet in ',
-          ),
-          Text(
-            ' minutes',
-          ),
-        ],
+  Widget _buildBody(BuildContext context) {
+    // TODO: get actual snapshot from Cloud Firestore
+    return _buildList(context, dummySnapshot);
+  }
+
+  Widget _buildList(BuildContext context, List<Map> snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 20.0),
+      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, Map data) {
+    final record = Record.fromMap(data);
+
+    return Padding(
+      key: ValueKey(record.eventName),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: ListTile(
+          title: Text(record.eventName),
+          trailing: Text(record.startTime.toString()),
+          onTap: () => print(record),
+        ),
       ),
     );
   }
+}
+
+class Record {
+  final String eventName;
+  final DateTime startTime;
+  final DocumentReference reference;
+
+  Record.fromMap(Map<String, dynamic> map, {this.reference})
+      : assert(map['event'] != null),
+        assert(map['startTime'] != null),
+        eventName = map['event'],
+        startTime = map['startTime'];
+
+  Record.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data, reference: snapshot.reference);
+
+  @override
+  String toString() => "Record<$eventName:$startTime>";
 }
