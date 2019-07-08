@@ -47,7 +47,7 @@ class _StoffPageState extends State<StoffPage> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('StoffEvents').snapshots(),
+      stream: Firestore.instance.collection('StoffEvents').orderBy('startTime', descending: true).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator(
