@@ -120,7 +120,6 @@ class _StoffPageState extends State<StoffPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-
           FlatButton(
             onPressed: () => _addTime(record,5),
             child: Text(
