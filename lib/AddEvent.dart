@@ -20,29 +20,29 @@ class _AddEventPageState extends State<AddEventPage> {
       ),
       body: Center(
         child: Column(children: <Widget>[
-          TextField(
-            controller: eventNameController,
-            decoration: InputDecoration(
-                //border: InputBorder.none,
-                hintText: 'Event Name'),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: TextField(
+              controller: eventNameController,
+              decoration: InputDecoration(hintText: 'Event Name'),
+            ),
           ),
           FlatButton(
-            onPressed: () {
-              DatePicker.showDateTimePicker(context, showTitleActions: true,
-                  onChanged: (date) {
-                print('change $date in time zone ' +
-                    date.timeZoneOffset.inHours.toString());
-              }, onConfirm: (date) {
-                print('confirm $date');
-                eventTime = date;
-                setState(() {});
-              }, currentTime: DateTime.now());
-            },
-            child: Text(
-              '$eventTime',
-              style: TextStyle(color: Colors.blue),
-            )
-          ),
+              onPressed: () {
+                DatePicker.showDateTimePicker(context, showTitleActions: true,
+                    onChanged: (date) {
+                  print('change $date in time zone ' +
+                      date.timeZoneOffset.inHours.toString());
+                }, onConfirm: (date) {
+                  print('confirm $date');
+                  eventTime = date;
+                  setState(() {});
+                }, currentTime: DateTime.now());
+              },
+              child: Text(
+                '$eventTime',
+                style: TextStyle(color: Colors.blue),
+              )),
           RaisedButton(
             onPressed: () {
               print(eventNameController.text + ' -> $eventTime');
