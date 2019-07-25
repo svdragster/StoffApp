@@ -27,7 +27,6 @@ class StoffPage extends StatefulWidget {
 }
 
 class _StoffPageState extends State<StoffPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +36,8 @@ class _StoffPageState extends State<StoffPage> {
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => AddEventPage()));
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => AddEventPage()));
         },
         child: Icon(Icons.add_box),
         backgroundColor: Colors.pink,
@@ -47,7 +47,10 @@ class _StoffPageState extends State<StoffPage> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('StoffEvents').orderBy('startTime', descending: true).snapshots(),
+      stream: Firestore.instance
+          .collection('StoffEvents')
+          .orderBy('startTime', descending: true)
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return CircularProgressIndicator(
@@ -79,15 +82,23 @@ class _StoffPageState extends State<StoffPage> {
           border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(5.0),
         ),
-        child: ListTile(
-          title: Text(record.eventName),
-          trailing: Text(record.startTime.toString()),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildAboutDialog(context, record),
-            );
-          }
+        child: Dismissible(
+          key: Key(record.eventName),
+          onDismissed: (direction) {
+             _transactionalDelete(record);
+            Scaffold.of(context)
+                .showSnackBar(SnackBar(content: Text("${record.eventName} dismissed")));
+          },
+          child: ListTile(
+              title: Text(record.eventName),
+              trailing: Text(record.startTime.toString()),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      _buildAboutDialog(context, record),
+                );
+              }),
         ),
       ),
     );
@@ -95,22 +106,22 @@ class _StoffPageState extends State<StoffPage> {
 
   void _addTime(Record record, int timeToAdd) {
     Firestore.instance.runTransaction((Transaction transaction) async {
-    final freshSnapshot = await transaction.get(record.reference);
-    final fresh = Record.fromSnapshot(freshSnapshot);
+      final freshSnapshot = await transaction.get(record.reference);
+      final fresh = Record.fromSnapshot(freshSnapshot);
 
-    await transaction.update(record.reference, {'startTime': fresh.startTime.add(Duration(minutes: 5))});
-
+      await transaction.update(record.reference,
+          {'startTime': fresh.startTime.add(Duration(minutes: 5))});
     });
 
-    Navigator.of(context).pop();     
+    Navigator.of(context).pop();
   }
 
-  void _delete(Record record) {
+  Future _transactionalDelete(Record record) async {
     Firestore.instance.runTransaction((transaction) async {
       await transaction.delete(record.reference);
     });
-    print(record);
-    Navigator.of(context).pop();
+
+    print("$record deleted");
   }
 
   Widget _buildAboutDialog(BuildContext context, Record record) {
@@ -121,19 +132,11 @@ class _StoffPageState extends State<StoffPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           FlatButton(
-            onPressed: () => _addTime(record,5),
-            child: Text(
-             '+5 minutes',
-              style: TextStyle(color: Colors.blue),
-            )
-          ),
-          FlatButton(
-              onPressed: () => _delete(record),
+              onPressed: () => _addTime(record, 5),
               child: Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
-              )
-          ),
+                '+5 minutes',
+                style: TextStyle(color: Colors.blue),
+              )),
         ],
       ),
       actions: <Widget>[
@@ -151,7 +154,8 @@ class _StoffPageState extends State<StoffPage> {
   Widget _buildAboutText() {
     return new RichText(
       text: new TextSpan(
-        text: 'Android Popup Menu displays the menu below the anchor text if space is available otherwise above the anchor text. It disappears if you click outside the popup menu.\n\n',
+        text:
+            'Android Popup Menu displays the menu below the anchor text if space is available otherwise above the anchor text. It disappears if you click outside the popup menu.\n\n',
         style: const TextStyle(color: Colors.black87),
         children: <TextSpan>[
           const TextSpan(text: 'The app was developed with '),
@@ -181,7 +185,9 @@ class Record {
       : assert(map['event'] != null),
         assert(map['startTime'] != null),
         eventName = map['event'],
-        startTime = map['startTime'] is Timestamp ? map['startTime'].toDate() : map['startTime'];
+        startTime = map['startTime'] is Timestamp
+            ? map['startTime'].toDate()
+            : map['startTime'];
 
   Record.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
