@@ -56,10 +56,6 @@ class _AddEventPageState extends State<AddEventPage> {
             },
             child: const Text('Add Event', style: TextStyle(fontSize: 20)),
           ),
-          FlatButton(
-            onPressed: () {},
-            child: Text("Cancel"),
-          ),
         ]),
       ),
     );
