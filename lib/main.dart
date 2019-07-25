@@ -88,16 +88,29 @@ class _StoffPageState extends State<StoffPage> {
               builder: (BuildContext context) => _buildAboutDialog(context, record),
             );
           }
-          /*onTap: () => Firestore.instance.runTransaction((transaction) async {
-            final freshSnapshot = await transaction.get(record.reference);
-            final fresh = Record.fromSnapshot(freshSnapshot);
-
-            await transaction
-                .update(record.reference, {'startTime': fresh.startTime.add(Duration(days: 1, minutes: 12))});
-          }),*/
         ),
       ),
     );
+  }
+
+  void _addTime(Record record, int timeToAdd) {
+    Firestore.instance.runTransaction((Transaction transaction) async {
+    final freshSnapshot = await transaction.get(record.reference);
+    final fresh = Record.fromSnapshot(freshSnapshot);
+
+    await transaction.update(record.reference, {'startTime': fresh.startTime.add(Duration(minutes: 5))});
+
+    });
+
+    Navigator.of(context).pop();     
+  }
+
+  void _delete(Record record) {
+    Firestore.instance.runTransaction((transaction) async {
+      await transaction.delete(record.reference);
+    });
+    print(record);
+    Navigator.of(context).pop();
   }
 
   Widget _buildAboutDialog(BuildContext context, Record record) {
@@ -107,26 +120,16 @@ class _StoffPageState extends State<StoffPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+
           FlatButton(
-            onPressed: () => Firestore.instance.runTransaction((transaction) async {
-              final freshSnapshot = await transaction.get(record.reference);
-              final fresh = Record.fromSnapshot(freshSnapshot);
-
-              await transaction
-                  .update(record.reference, {'startTime': fresh.startTime.add(Duration(minutes: 5))});
-
-              Navigator.of(context).pop();
-            }),
+            onPressed: () => _addTime(record,5),
             child: Text(
-              '+5 minutes',
+             '+5 minutes',
               style: TextStyle(color: Colors.blue),
             )
           ),
           FlatButton(
-              onPressed: () => Firestore.instance.runTransaction((transaction) async {
-                await transaction.delete(record.reference);
-                Navigator.of(context).pop();
-              }),
+              onPressed: () => _delete(record),
               child: Text(
                 'Delete',
                 style: TextStyle(color: Colors.red),
